@@ -45,9 +45,11 @@ So, I wrote a conversion routine, converting strings to u32s, and
 wrote overlap_int(), which just checks to see if the and is non-zero.
 
 Also, I wrote a preprocessing step that checks to see if the word at
-index a overlaps with the word at index b, where a < b. This allows me
-to only consider words that have at least one previous word that
-works, and then use the overlap_int() test for the others.
+index a overlaps with the word at index b, where a < b. I then
+maintain a hashtable, indexed on a, of all b values that do not
+overlap. This allows me to only consider words that have at least one
+previous word that works, and then use the overlap_int() test for the
+others.
 
 Time: 1m3s
 
