@@ -1,6 +1,10 @@
 use std::fs;
 use std::collections::HashMap;
 
+use crate::algx::AlgXGridBuilder;
+
+mod algx;
+
 fn overlap(w_1: &str, w_2: &str) -> bool {
     let b_1 = w_1.as_bytes();
     let b_2 = w_2.as_bytes();
@@ -30,8 +34,8 @@ fn overlap_int(w_i_1: u32, w_i_2: u32) -> bool {
     (w_i_1 & w_i_2) != 0
 }
 
-/*
-fn main() {
+
+fn brute_search_1() {
     println!("Hello, world!");
 
     let wordlist = fs::read_to_string("Data/merged.txt")
@@ -78,9 +82,10 @@ fn main() {
 	}
     }
 }
- */
 
-fn main() {
+
+
+fn brute_search_2() {
     let wordlist = fs::read_to_string("Data/merged.txt")
 	.expect("failed to read file");
 
@@ -161,4 +166,95 @@ fn main() {
 	    }
 	}
     }
+}
+
+
+fn make_values(word: &String) -> Vec<usize> {
+    let mut v = vec!();
+
+    assert!(word.len() == 5);
+    
+    for c in word.chars() {
+	v.push(c as usize - 65);
+    }
+    v
+}
+
+
+// test AlgX
+
+fn alg_x_test() {
+    let mut col_names = vec!();
+
+    for i in 1 .. 8 {
+	col_names.push(i.to_string());
+    }
+    let mut bld = AlgXGridBuilder::new(col_names);
+
+    bld.add_row_str("A".to_string(), ["1",       "4",           "7"].to_vec());
+    bld.add_row_str("B".to_string(), ["1",       "4"               ].to_vec());
+    bld.add_row_str("C".to_string(), [           "4", "5",      "7"].to_vec());
+    bld.add_row_str("D".to_string(), [        "3",    "5", "6"     ].to_vec());
+    bld.add_row_str("E".to_string(), [   "2", "3",         "6", "7"].to_vec());
+    bld.add_row_str("F".to_string(), [   "2",                   "7"].to_vec());
+
+    let mut algx_grid = bld.build();
+
+    algx_grid.solve();    
+}
+
+
+fn jotto_algx() {
+    // alg x implementation
+    
+    let wordlist = fs::read_to_string("Data/merged.txt")
+	.expect("failed to read file");
+
+    let mut words_vec = vec!();
+    
+    for w in wordlist.split_whitespace() {
+	//println!("word: {}", w);
+	words_vec.push(w);
+    }
+
+    println!("making table");
+
+    let mut col_names = vec!();
+    for i in 0 .. 26 {
+	col_names.push(char::from_u32('A' as u32 + i).unwrap().to_string());
+    }
+
+    col_names.push('*'.to_string());
+
+    println!("col names: {:?}", col_names);
+
+    let mut bld = AlgXGridBuilder::new(col_names);
+    println!("made columns");
+    
+    for word in words_vec {
+	let mut cols = vec!();
+	for c in word.chars() {
+	    cols.push(c.to_string());
+	}
+	bld.add_row(word.to_string(), cols);
+    }
+
+    for i in 0 .. 26 {
+	let ditch_char = char::from_u32('A' as u32 + i).unwrap();
+	let ditch_name = ditch_char.to_string();
+	let ditch_vec = vec!{ditch_name.to_string(), "*".to_string()};
+	bld.add_row(ditch_name, ditch_vec);
+    }
+    println!("made rows");
+
+    let mut algx_grid = bld.build();
+    println!("made grid");
+
+    algx_grid.solve();
+}
+
+fn main() {
+    //brute_search_1();
+    //brute_search_2();
+    jotto_algx();
 }

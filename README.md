@@ -56,6 +56,16 @@ Time: 1m3s
 That's good for one day. I think I'd like to try pulling in an
 implementation of Knuth's Algorithm X and see how it performs.
 
+## Algorithm X
+
+A few weeks later, I have implemented Algorithm X (perhaps not the
+most performantly), and my implementation takes a total of
+
+Time: 1m4s
+
+which includes building the table. I'm using a vector of ints instead
+of Knuth's linked lists. Knuth's implementation is assuredly a little
+better.
 
 
 
