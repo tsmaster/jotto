@@ -84,3 +84,11 @@ for the longest-running thread, which looks like the Q thread; the
 thread looking for 5 words of 5 letters each, none of which have the
 letter Q. 
 
+### Updating Rust to 1.65.0
+
+I had been running 1.60.0, which explains why I couldn't use the
+built-in scoped threading - it was only enabled in 1.63.0. I updated
+to 1.65.0, rebuilt, and I'm getting a little variability, but
+sometimes as low as:
+
+Time: 16.851s
