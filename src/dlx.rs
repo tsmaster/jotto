@@ -1,3 +1,9 @@
+//
+// Not my code!
+// from
+// https://ferrous-systems.com/blog/dlx-in-rust/
+//
+
 use std::{
   cmp::Ordering,
   fmt,
