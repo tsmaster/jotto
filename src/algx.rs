@@ -77,7 +77,7 @@ pub struct AlgXGridBuilder
 {
     col_keys: Vec<String>,
     row_keys: Vec<String>,
-    rows: Vec<Vec<usize>>,
+    pub rows: Vec<Vec<usize>>,
     columns: Vec<AlgXColumn>,
 }
 
@@ -254,7 +254,7 @@ impl AlgX {
 	self.solve_rec(&mut solns);
     }
 
-    fn select(&mut self, row_index: usize) -> Vec<usize> {
+    pub fn select(&mut self, row_index: usize) -> Vec<usize> {
 	//println!("selecting row key: {}", self.row_keys[row_index]);
 	let mut cols = vec!();
 

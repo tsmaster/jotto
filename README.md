@@ -68,5 +68,19 @@ of Knuth's linked lists. Knuth's implementation is assuredly a little
 better.
 
 
+## Multithreaded Algorithm X
 
+One thing I've never been satisfied with is how to adequately do any
+sort of tree search, especially a depth first search, using
+multithreading.
+
+What I've done here is build 26 grids, and explicitly "select" the row
+of the grid corresponding to throwing away a letter of the alphabet.
+
+Time: 17.789s
+
+Which is a little more than a quarter of the previous time - I do wait
+for the longest-running thread, which looks like the Q thread; the
+thread looking for 5 words of 5 letters each, none of which have the
+letter Q. 
 

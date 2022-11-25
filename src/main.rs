@@ -1,7 +1,10 @@
 use std::fs;
 use std::collections::HashMap;
+use std::thread;
 
 use crate::algx::AlgXGridBuilder;
+extern crate scoped_threadpool;
+use scoped_threadpool::Pool;
 
 mod algx;
 
@@ -253,8 +256,79 @@ fn jotto_algx() {
     algx_grid.solve();
 }
 
+
+
+fn jotto_algx_multi() {
+    // alg x implementation
+    
+    let wordlist = fs::read_to_string("Data/merged.txt")
+	.expect("failed to read file");
+
+    let mut words_vec = vec!();
+    
+    for w in wordlist.split_whitespace() {
+	//println!("word: {}", w);
+	words_vec.push(w);
+    }
+
+    println!("making table");
+
+    let mut col_names = vec!();
+    for i in 0 .. 26 {
+	col_names.push(char::from_u32('A' as u32 + i).unwrap().to_string());
+    }
+
+    col_names.push('*'.to_string());
+
+    println!("col names: {:?}", col_names);
+
+    let mut bld = AlgXGridBuilder::new(col_names);
+    println!("made columns");
+    
+    for word in words_vec {
+	let mut cols = vec!();
+	for c in word.chars() {
+	    cols.push(c.to_string());
+	}
+	bld.add_row(word.to_string(), cols);
+    }
+
+    for i in 0 .. 26 {
+	let ditch_char = char::from_u32('A' as u32 + i).unwrap();
+	let ditch_name = ditch_char.to_string();
+	let ditch_vec = vec!{ditch_name.to_string(), "*".to_string()};
+	bld.add_row(ditch_name, ditch_vec);
+    }
+    println!("made rows");
+
+    //let mut pool = Pool::new(26);
+    let mut pool = Pool::new(num_cpus::get().try_into().unwrap());
+
+    println!("row count: {}", bld.rows.len());
+
+    pool.scoped(|scope| {
+	for i in 0 .. 26 {
+	    println!("making thread {}", i);
+	    let mut algx_grid = bld.build();
+
+	    let row_num = bld.rows.len() - 26 + i;
+	    println!("selecting row# {}", row_num);
+	    algx_grid.select(row_num);
+
+	    scope.execute(move || {
+		algx_grid.solve();
+	    });
+	    println!("thread {} complete", i);
+	}
+    });
+    
+    println!("all threads complete");
+}
+
+
 fn main() {
     //brute_search_1();
     //brute_search_2();
-    jotto_algx();
+    //jotto_algx();
+    jotto_algx_multi();
 }
